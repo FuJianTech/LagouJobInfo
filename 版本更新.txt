@@ -1,0 +1,20 @@
+2020.09.04
+处理None 无法识别的问题，增加行业信息判断语句，handle_insert_data.py 78行
+多个岗位采集出现频繁的问题,引入外部资源包,job_info.py，增加随机抽取列表中的职位，random.choice()
+多个城市随机抽取列表中的职位，集合转列表后，随机抽取 random.choice()
+
+time时间设置为5秒采集，出现频繁的话，等待60秒后再次采集信息
+Pool(5) 设置为5
+
+数据来源于网络,侵删
+
+
+2020.09.10
+初始化数据库信息：create_lagou_table.py(修改为自己的服务器和和端口信息)
+运行爬虫:handle_crawl_lagou.py
+可视化界面:lagou_data_analysis/run.py(采集信息分布图)
+
+展示文件: show_pic文件夹下
+
+TODO: 数据量过大，圆圈覆盖面积过大
+
