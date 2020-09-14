@@ -6,8 +6,7 @@ import re
 import time
 import requests
 import multiprocessing
-from lagou_spider.handle_insert_data import lagou_mysql
-
+from LagouJobInfo.lagou_spider.handle_insert_data import lagou_mysql
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)

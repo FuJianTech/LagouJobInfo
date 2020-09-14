@@ -18,3 +18,14 @@ Pool(5) 设置为5
 
 TODO: 数据量过大，圆圈覆盖面积过大
 
+
+2020.09.14
+
+修改模块导入问题
+不采用from .xxx  import xxx
+采用from xxx.xxz import zzz
+上传服务器,测试版本
+sh 文件不采用conda方式
+修改未服务器默认python版本 3.6.8
+安装相应的第三方包
+

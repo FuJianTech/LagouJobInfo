@@ -1,7 +1,10 @@
+import sys
+sys.path.append(r'/home/FuJianTech/LagouJobInfo/')
+
 from collections import Counter
 from sqlalchemy import func
-from lagou_spider.create_lagou_tables import Lagoutables
-from lagou_spider.create_lagou_tables import Session
+from .create_lagou_tables import Lagoutables
+from .create_lagou_tables import Session
 import time
 
 
@@ -62,7 +65,6 @@ class HandleLagouData(object):
             self.mysql_session.add(data)
             self.mysql_session.commit()
             print('新增岗位:%s' %item['positionName'],"-----", '所在城市:%s' %item['city'])
-
     #行业信息
     def query_industryfield_result(self):
         info = {}
