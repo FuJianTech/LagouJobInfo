@@ -1,11 +1,14 @@
-import sys
-sys.path.append(r'/home/FuJianTech/LagouJobInfo/')
-
 from collections import Counter
 from sqlalchemy import func
-from .create_lagou_tables import Lagoutables
-from .create_lagou_tables import Session
+from LagouJobInfo.lagou_spider.create_lagou_tables import Lagoutables
+from LagouJobInfo.lagou_spider.create_lagou_tables import Session
+
 import time
+import os,sys
+if os.name=="nt":
+    sys.path.append(r'E:\FuJianTech\LagouJobInfo')
+if os.name=="posix":
+    sys.path.append(r'/home/FuJianTech/LagouJobInfo/')
 
 
 class HandleLagouData(object):

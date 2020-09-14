@@ -1,6 +1,3 @@
-import sys
-sys.path.append(r'/home/FuJianTech/LagouJobInfo/')
-
 import json
 import re
 import time
@@ -8,8 +5,12 @@ import requests
 import multiprocessing
 from LagouJobInfo.lagou_spider.handle_insert_data import lagou_mysql
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+import os,sys
+if os.name=="nt":
+    sys.path.append(r'E:\FuJianTech\LagouJobInfo')
+if os.name=="posix":
+    sys.path.append(r'/home/FuJianTech/LagouJobInfo/')
 
 
 class HandleLaGou(object):

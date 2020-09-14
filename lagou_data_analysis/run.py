@@ -1,11 +1,15 @@
-import sys
-sys.path.append(r'/home/FuJianTech/LagouJobInfo/')
+import os,sys
+if os.name=="nt":
+    sys.path.append(r'E:\FuJianTech\LagouJobInfo')
+if os.name=="posix":
+    sys.path.append(r'/home/FuJianTech/LagouJobInfo/')
+
 
 
 
 from flask import Flask, render_template, jsonify
 
-from lagou_spider.handle_insert_data import lagou_mysql
+from LagouJobInfo.lagou_spider.handle_insert_data import lagou_mysql
 
 app = Flask(__name__)
 
