@@ -1,14 +1,17 @@
-from collections import Counter
-from sqlalchemy import func
-from LagouJobInfo.lagou_spider.create_lagou_tables import Lagoutables
-from LagouJobInfo.lagou_spider.create_lagou_tables import Session
-
-import time
 import os,sys
 if os.name=="nt":
-    sys.path.append(r'E:\FuJianTech\LagouJobInfo')
+    sys.path.append(r'E:\FuJianTech\LagouJobInfo\\')
 if os.name=="posix":
     sys.path.append(r'/home/FuJianTech/LagouJobInfo/')
+
+from collections import Counter
+from sqlalchemy import func
+# from LagouJobInfo.lagou_spider.create_lagou_tables import Lagoutables
+from create_lagou_tables import Lagoutables
+# from LagouJobInfo.lagou_spider.create_lagou_tables import Session
+from create_lagou_tables import Session
+
+import time
 
 
 class HandleLagouData(object):
@@ -18,7 +21,8 @@ class HandleLagouData(object):
         self.date = time.strftime("%Y-%m-%d",time.localtime())
 
     def insert_item(self, item):
-        date = time.strftime("%Y-%m-%d", time.localtime())
+        collect_time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime())
+        collect_data = time.strftime("%Y/%m/%d ", time.localtime())
         #存储的数据结构
         data = Lagoutables(
             #岗位ID
@@ -55,19 +59,31 @@ class HandleLagouData(object):
             companyLabelList=','.join(item['companyLabelList']),
             #工资
             salary=item['salary'],
+            # 抓取时间
+            crawl_date=collect_time,
+            # 创建时间
+            createtime=item['createTime'],
             # 抓取日期
-            crawl_date=date
+            collect_data = collect_data
         )
         # 在存储数据之前，先查询表中是否有这条岗位信息
-        query_result = self.mysql_session.query(Lagoutables).filter(Lagoutables.crawl_date == date,
-                                                                    Lagoutables.positionId == item['positionId']).first()
+        query_result = self.mysql_session.query(Lagoutables).filter(Lagoutables.crawl_date == collect_data,
+                                                                         Lagoutables.positionId == item['positionId']).first()
         if query_result:
             pass
             print('该岗位信息已存在%s:%s:%s' %(item['positionId'], item['city'], item['positionName']))
         else:
-            self.mysql_session.add(data)
-            self.mysql_session.commit()
-            print('新增岗位:%s' %item['positionName'],"-----", '所在城市:%s' %item['city'])
+            try:
+                print(72,data)
+                self.mysql_session.add(data)
+                self.mysql_session.commit()
+                print('新增岗位:%s' %item['positionName'],"-----", '所在城市:%s' %item['city'])
+                self.mysql_session.close()
+            except Exception as e:
+                self.mysql_session.rollback()
+            finally:
+                self.session.close()
+
     #行业信息
     def query_industryfield_result(self):
         info = {}
@@ -75,7 +91,8 @@ class HandleLagouData(object):
         result = self.mysql_session.query(Lagoutables.industryField).filter(
             Lagoutables.crawl_date==self.date
         ).all()
-        # print(73,result)
+        self.mysql_session.close()
+        print(73,result)
         # 修改None 的spilt()问题
         result_list1= []
         for x in result:
@@ -99,6 +116,8 @@ class HandleLagouData(object):
         info = {}
         # 查询今日抓取到的薪资数据
         result = self.mysql_session.query(Lagoutables.salary).filter(Lagoutables.crawl_date == self.date).all()
+        self.mysql_session.close()
+
         # 处理原始数据
         result_list1 = [x[0] for x in result]
         # 计数,并返回
@@ -114,6 +133,8 @@ class HandleLagouData(object):
         info = {}
         # 查询今日抓取到的薪资数据
         result = self.mysql_session.query(Lagoutables.workYear).filter(Lagoutables.crawl_date==self.date).all()
+        self.mysql_session.close()
+
         # 处理原始数据
         result_list1 = [x[0] for x in result]
         # 计数,并返回
@@ -129,6 +150,8 @@ class HandleLagouData(object):
         info = {}
         # 查询今日抓取到的薪资数据
         result = self.mysql_session.query(Lagoutables.education).filter(Lagoutables.crawl_date==self.date).all()
+        self.mysql_session.close()
+
         # 处理原始数据
         result_list1 = [x[0] for x in result]
         # 计数,并返回
@@ -143,6 +166,8 @@ class HandleLagouData(object):
     def query_job_result(self):
         info = {}
         result = self.mysql_session.query(Lagoutables.crawl_date,func.count('*').label('c')).group_by(Lagoutables.crawl_date).all()
+        self.mysql_session.close()
+
         result1 = [{"name": x[0], "value": x[1]} for x in result]
         name_list = [name['name'] for name in result1]
         info['x_name'] = name_list
@@ -154,6 +179,8 @@ class HandleLagouData(object):
         info = {}
         # 查询今日抓取到的薪资数据
         result = self.mysql_session.query(Lagoutables.city,func.count('*').label('c')).filter(Lagoutables.crawl_date==self.date).group_by(Lagoutables.city).all()
+        self.mysql_session.close()
+
         result1 = [{"name": x[0], "value": x[1]} for x in result]
         name_list = [name['name'] for name in result1]
         info['x_name'] = name_list
@@ -165,6 +192,8 @@ class HandleLagouData(object):
         info = {}
         # 查询今日抓取到的薪资数据
         result = self.mysql_session.query(Lagoutables.financeStage).filter(Lagoutables.crawl_date == self.date).all()
+        self.mysql_session.close()
+
         # 处理原始数据
         result_list1 = [x[0] for x in result]
         # 计数,并返回
@@ -180,6 +209,8 @@ class HandleLagouData(object):
         info = {}
         # 查询今日抓取到的薪资数据
         result = self.mysql_session.query(Lagoutables.companySize).filter(Lagoutables.crawl_date == self.date).all()
+        self.mysql_session.close()
+
         # 处理原始数据
         result_list1 = [x[0] for x in result]
         # 计数,并返回
@@ -196,6 +227,8 @@ class HandleLagouData(object):
         info = {}
         # 查询今日抓取到的薪资数据
         result = self.mysql_session.query(Lagoutables.jobNature).filter(Lagoutables.crawl_date == self.date).all()
+        self.mysql_session.close()
+
         # 处理原始数据
         result_list1 = [x[0] for x in result]
         # 计数,并返回
@@ -209,8 +242,12 @@ class HandleLagouData(object):
     # 抓取数量
     def count_result(self):
         info = {}
-        info['all_count'] = self.mysql_session.query(Lagoutables).count()
-        info['today_count'] = self.mysql_session.query(Lagoutables).filter(Lagoutables.crawl_date==self.date).count()
-        return info
+        try:
+            info['all_count'] = self.mysql_session.query(Lagoutables).count()
+            info['today_count'] = self.mysql_session.query(Lagoutables).filter(Lagoutables.crawl_date==self.date).count()
+            self.mysql_session.close()
 
+            return info
+        except :
+            pass
 lagou_mysql = HandleLagouData()

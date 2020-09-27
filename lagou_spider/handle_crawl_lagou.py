@@ -3,7 +3,8 @@ import re
 import time
 import requests
 import multiprocessing
-from LagouJobInfo.lagou_spider.handle_insert_data import lagou_mysql
+# from LagouJobInfo.lagou_spider.handle_insert_data import lagou_mysql
+from handle_insert_data import lagou_mysql
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 import os,sys
@@ -45,6 +46,7 @@ class HandleLaGou(object):
             from job_info import jobs
             import random
             # jobs = ['广告设计师', '多媒体设计师', '原画师', '游戏特效', '游戏界面设计师', '游戏场景', ]
+            print(48,first_request_url)
             for j in jobs:
                 for i in range(1, int(total_page) + 1):
                     data = {
@@ -61,8 +63,11 @@ class HandleLaGou(object):
                         method="POST", url=page_url, data=data, info=city)
                     lagou_data = json.loads(response)
                     job_list = lagou_data['content']['positionResult']['result']
+                    print(64,job_list)
                     for job in job_list:
+                        print(66,job)
                         lagou_mysql.insert_item(job)
+                        time.sleep(1)
 
     def handle_request(self, method, url, data=None, info=None):
         while True:
@@ -92,13 +97,16 @@ if __name__ == '__main__':
     lagou.handle_city()
     print(lagou.city_list)
     # 引入多进程加速抓取
-    pool = multiprocessing.Pool(5)
+    pool = multiprocessing.Pool(3)
     import random
     city_list = list(lagou.city_list)
-
-    for city in city_list:
+    print(102,len(city_list))
+    # 随机
+    for city in range(len(city_list)):
         pool.apply_async(
             lagou.handle_city_job, args=(
                 random.choice(city_list),))
     pool.close()
     pool.join()
+
+    print("         234234234")

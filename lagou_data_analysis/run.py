@@ -1,11 +1,8 @@
 import os,sys
 if os.name=="nt":
-    sys.path.append(r'E:\FuJianTech\LagouJobInfo')
+    sys.path.append(sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))))
 if os.name=="posix":
-    sys.path.append(r'/home/FuJianTech/LagouJobInfo/')
-
-
-
+    sys.path.append(sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))))
 
 from flask import Flask, render_template, jsonify
 
@@ -18,7 +15,6 @@ def lagou():
     # 库内数据总量，今日抓取量
     result = lagou_mysql.count_result()
     return render_template('index.html', result=result)
-
 
 @app.route('/get_echart_data')
 def get_echart_data():
@@ -45,7 +41,7 @@ def get_echart_data():
 
 if __name__ == '__main__':
 
-    app.run(debug=True, host='0.0.0.0', port=5050)
-    #app.run(debug=True, host='127.0.0.1', port=8880)
+    # app.run(debug=True, host='0.0.0.0', port=5050)
+    app.run(debug=True, host='127.0.0.1', port=8880)
 
 

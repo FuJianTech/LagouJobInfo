@@ -3,8 +3,11 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column
 
+from sqlalchemy.pool import NullPool
+
 #创建数据库的连接
 engine = create_engine("mysql+pymysql://root:root@localhost:3306/lagou?charset=utf8")
+
 #操作数据库,需要我们创建一个session
 Session = sessionmaker(bind=engine)
 
@@ -13,7 +16,8 @@ Base = declarative_base()
 
 class Lagoutables(Base):
     #表名称
-    __tablename__ = 'lagou_data'
+    __tablename__ = 'lagou_data_copy1'
+    # __tablename__ = 'lagou_data'
     #id,设置为主键和自动增长
     id = Column(Integer,primary_key=True,autoincrement=True)
     #岗位ID,非空字段
@@ -52,6 +56,10 @@ class Lagoutables(Base):
     salary = Column(String(length=20), nullable=False)
     # 抓取日期
     crawl_date = Column(String(length=20), nullable=False)
+    # 抓取日期
+    createtime = Column(String(length=20), nullable=False)
+    # 抓取日期
+    collect_data = Column(String(length=20), nullable=False)
 
 if __name__ == '__main__':
     #创建数据表
